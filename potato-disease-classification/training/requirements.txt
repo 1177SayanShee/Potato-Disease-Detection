@@ -1,0 +1,7 @@
+matplotlib
+numpy
+notebook
+tensorflow-addons
+tensorflow-model-optimization
+# tensorflow==2.5.0
+tensorflow==2.11.0

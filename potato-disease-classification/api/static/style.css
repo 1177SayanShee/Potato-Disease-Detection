@@ -1,0 +1,154 @@
+
+body {
+    background: url("./images/FarmImage.avif") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+
+
+}
+
+.glass-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+    width: 100%;
+    max-width: 500px;
+    z-index: 1;
+    overflow: hidden;
+}
+
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: conic-gradient(from 0deg,
+            #00ffae,
+            #00bfff,
+            #ff00d4,
+            #ff9900,
+            #00ffae);
+    border-radius: 25px;
+    z-index: -1;
+
+    padding: 3px;
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+}
+
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-shadow: 3px 3px 3px rgba(192, 148, 148, 0.5);
+    color: #38165c
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: transform 0.2s ease-in-out;
+}
+
+.btn-success:hover {
+    transform: scale(1.030);
+    background-color: #218838;
+}
+
+
+
+
+/* 📸 Preview image styling */
+.image-preview {
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+
+}
+
+/* h4 {
+    color: #38165c;
+} */
+
+.preview-img {
+    max-width: 400px;
+    max-height: 400px;
+    border-radius: 15px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 140, 0.3);
+    backdrop-filter: blur(4px);
+    transition: transform 0.3s ease;
+}
+
+.preview-img:hover {
+    transform: scale(1.02);
+}
+
+
+.cal-sans-regular {
+    font-family: "Cal Sans", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: xx-large;
+    color:#38165c;
+}
+
+
+
+
+
+
+
+
+body {
+    background: url("./images/FarmImage.avif") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Reuse existing glass-card and rotating border styles here */
+
+.result-info {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.result-info strong {
+    color: #007bff;
+}
+
+/* Optional: animate the appearance */
+.glass-card {
+    animation: fadeInUp 1s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
