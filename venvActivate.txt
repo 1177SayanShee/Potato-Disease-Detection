@@ -1,0 +1,6 @@
+Activate virtual Environment ----> venv\Scripts\activate
+
+then:
+cd potato-disease-classification
+cd api
+uvicorn main:app --reload
