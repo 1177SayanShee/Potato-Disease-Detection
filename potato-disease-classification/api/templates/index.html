@@ -2,16 +2,18 @@
 
 {% block content %}
 <div class="content-wrapper d-flex flex-column align-items-center">
-    <!-- Toggle Switch -->
-    <div class="btn-group mb-4" role="group" aria-label="Toggle input method">
-        <input type="radio" class="btn-check" name="toggle" id="uploadToggle" autocomplete="off" checked
-            onchange="showUpload()">
-        <label class="btn btn-outline-primary" for="uploadToggle">UPLOAD IMAGE</label>
 
-        <input type="radio" class="btn-check" name="toggle" id="cameraToggle" autocomplete="off"
-            onchange="showCamera()">
-        <label class="btn btn-outline-primary" for="cameraToggle">USE CAMERA</label>
-    </div>
+    <!-- Toggle Switch -->
+    <div class="toggle-container">
+        <input type="radio" name="toggle" id="upload" checked>
+        <input type="radio" name="toggle" id="camera">
+      
+        <div class="toggle-slider"></div>
+      
+        <label for="upload" onclick="showUpload()">Upload</label>
+        <label for="camera" onclick="showCamera()">Camera</label>
+      </div>
+      
 
     <!-- Upload Card -->
     <div id="uploadCard" class="glass-card cal-sans-regular">
@@ -81,17 +83,15 @@
         document.getElementById('result').innerText = '';
     }
 
-    //  Capture photo and preview
-     function capturePhoto() {
-        // Draw the video frame to the canvas
+    
+    function capturePhoto() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Convert the canvas image to base64
         const imageData = canvas.toDataURL('image/jpeg');
         preview.style.display = 'block';
         preview.src = imageData;
-
-        // Set the value of the hidden input to the base64 image data
         cameraImageInput.value = imageData;
     }
 
@@ -104,7 +104,24 @@
             document.getElementById('cameraFeed').srcObject = stream;
         } catch (error) {
             console.error('Error accessing webcam:', error);
-            alert('Could not access the camera.');
+            alert('Camera access denied. Switching to upload mode.');
+
+            // ✅ Automatically switch to Upload mode
+            document.getElementById('cameraCard').style.display = 'none';
+            document.getElementById('uploadCard').style.display = 'block';
+
+            // ✅ If you use a toggle switch for mode selection, set it too
+            const uploadToggle = document.getElementById('uploadToggle');
+            if (uploadToggle) {
+                uploadToggle.checked = true;
+            }
+
+            // ✅ If you have a showUpload() function to handle logic, call it
+            if (typeof showUpload === 'function') {
+                showUpload();
+            }
+
+            return; // Exit early since camera is unavailable
         }
 
         const preview = document.getElementById('preview');
@@ -131,25 +148,9 @@
         }
     }
 
-    // function capturePhoto() {
-    //     const video = document.getElementById('cameraFeed');
-    //     const canvas = document.createElement('canvas');
-    //     canvas.width = video.videoWidth;
-    //     canvas.height = video.videoHeight;
-
-    //     const ctx = canvas.getContext('2d');
-    //     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    //     const preview = document.getElementById('preview');
-    //     preview.src = canvas.toDataURL('image/jpeg');
-    //     preview.style.display = 'block';
-    //     photoCaptured = true;
-    //     document.getElementById('result').innerText = '';
-    // }
-
     
-     // Submit the form for camera image prediction
-     function predictCamera() {
+    // Submit the form for camera image prediction
+    function predictCamera() {
         // Check if the camera image input is not empty
         if (cameraImageInput.value.trim() === "") {
             alert("Please capture an image before predicting.");
@@ -157,12 +158,19 @@
         }
 
         // Disable the submit button to prevent multiple submissions
-        const predictButton = document.querySelector('.btn-success');
+        const predictButton = document.querySelector('#cameraCard .btn-success');
         predictButton.disabled = true;
         predictButton.textContent = "Processing...";
 
         // Submit the form with the base64 camera image
-        cameraForm.submit();
+        // cameraForm.submit();
+
+        setTimeout(() => {
+            document.getElementById('camera-form').submit();
+            predictButton.disabled = false;
+            predictButton.textContent = "Predict";
+        }, 1000);
+
     }
 
 
@@ -195,6 +203,15 @@
             alert('Prediction failed.');
         }
     }
+
+    function handleToggleChange(toggle) {
+    if (toggle.checked) {
+        showCamera();
+    } else {
+        showUpload();
+    }
+}
+
 </script>
 
 

@@ -113,6 +113,7 @@ h2 {
     font-style: normal;
     font-size: xx-large;
     color:#38165c;
+    
 }
 
 
@@ -265,3 +266,88 @@ h2 {
     box-shadow: 0 0 15px rgba(0, 255, 140, 0.3);
     backdrop-filter: blur(4px);
 }
+
+
+@media (max-width: 576px) {
+    .glass-card {
+        padding: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .preview-img {
+        max-width: 90%;
+        height: auto;
+    }
+}
+
+
+
+
+
+@media (max-width: 576px) {
+    .glass-card {
+        padding: 1.5rem;
+    }
+
+    .preview-img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+
+.toggle-container {
+    position: relative;
+    width: 220px;
+    height: 50px;
+    background: #28a745;;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    font-family: sans-serif;
+    margin: 0 auto 30px auto; /* 👈 This adds 20px space at the bottom */
+  }
+  
+  .toggle-container input[type="radio"] {
+    display: none;
+  }
+  
+  .toggle-container label {
+    flex: 1;
+    text-align: center;
+    z-index: 2;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: color 0.3s ease;
+    user-select: none;
+    line-height: 40px;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 100px; /* half of total width minus padding */
+    height: 40px;
+    background: white;
+    border-radius: 40px;
+    transition: transform 0.4s ease;
+    z-index: 1;
+  }
+  
+  #camera:checked ~ .toggle-slider {
+    transform: translateX(110px); /* slide to camera */
+  }
+  
+  #upload:checked ~ label[for="upload"],
+  #camera:checked ~ label[for="camera"] {
+        color : rgba(66, 134, 6, 1);
+  }
+  
+
+
