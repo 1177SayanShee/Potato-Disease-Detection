@@ -1,162 +1,3 @@
-# Orginal Code ----------------------------------------------------------------->
-# from fastapi import FastAPI, File, UploadFile
-# from fastapi.middleware.cors import CORSMiddleware
-# import uvicorn
-# import numpy as np
-# from io import BytesIO
-# from PIL import Image
-# import tensorflow as tf
-
-# app = FastAPI()
-
-# def read_file_as_image(data) -> np.ndarray:
-#     image = Image.open(BytesIO(data)).convert("RGB")
-#     # image = image.resize((224, 224))
-#     image = image.resize((256, 256))
-#     return np.array(image)
-
-# origins = [
-#     "http://localhost",
-#     "http://localhost:3000",
-# ]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-# MODEL = tf.keras.models.load_model("../models/2")
-
-# CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
-
-# @app.get("/ping")
-# async def ping():
-#     return "Hello, I am alive"
-
-# # def read_file_as_image(data) -> np.ndarray:
-# #     image = np.array(Image.open(BytesIO(data)))
-# #     return image
-
-# # @app.post("/predict")
-# # async def predict(
-# #     file: UploadFile = File(...)
-# # ):
-    
-# #     image = read_file_as_image(await file.read())
-# #     img_batch = np.expand_dims(image, 0)
-
-   
-    
-# #     predictions = MODEL.predict(img_batch)
-
-# #     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-# #     confidence = np.max(predictions[0])
-    
-# #     return {
-# #         'class': predicted_class,
-# #         'confidence': float(confidence)
-# #     }
-
-
-
-# # our code ------------------------------------------------------>
-
-# @app.post("/predict")
-# async def predict(
-#     file: UploadFile = File(...)
-# ):
-    
-#     image = read_file_as_image(await file.read())
-#     print(image.shape)
-
-#     img_batch = np.expand_dims(image, 0)
-#     print(img_batch.shape)  # should be (1, 224, 224, 3)
-
-    
-#     predictions = MODEL.predict(img_batch)
-
-#     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-#     confidence = np.max(predictions[0])
-    
-#     return {
-#         'class': predicted_class,
-#         'confidence': float(confidence)
-#     }
-
-# if __name__ == "__main__":
-#     uvicorn.run(app, host='localhost', port=8000)
-
-# To this  ------------------------------------------------------------------------------->
-
-
-
-
-
-# from fastapi import FastAPI, File, UploadFile, Request
-# from fastapi.responses import HTMLResponse
-# from fastapi.staticfiles import StaticFiles
-# from fastapi.templating import Jinja2Templates
-# from fastapi.middleware.cors import CORSMiddleware
-# import numpy as np
-# from io import BytesIO
-# from PIL import Image
-# import tensorflow as tf
-# import os
-
-# app = FastAPI()
-
-
-
-# # CORS config (keep if using frontend separately)
-# origins = ["http://localhost", "http://localhost:3000"]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-# # Load model
-# MODEL = tf.keras.models.load_model("../models/2")
-# CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
-
-# # Setup static files & templates
-# app.mount("/static", StaticFiles(directory="static"), name="static")
-# templates = Jinja2Templates(directory="templates")
-
-
-# # Image read helper
-# def read_file_as_image(data) -> np.ndarray:
-#     image = Image.open(BytesIO(data)).convert("RGB")
-#     image = image.resize((256, 256))  # match your model's input shape
-#     return np.array(image)
-
-
-# @app.get("/", response_class=HTMLResponse)
-# async def index(request: Request):
-#     return templates.TemplateResponse("index1.html", {"request": request})
-
-
-# @app.post("/predict", response_class=HTMLResponse)
-# async def predict(request: Request, file: UploadFile = File(...)):
-#     image = read_file_as_image(await file.read())
-#     img_batch = np.expand_dims(image, 0)
-
-#     predictions = MODEL.predict(img_batch)
-#     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-#     confidence = float(np.max(predictions[0]))
-
-#     return templates.TemplateResponse("result1.html", {
-#         "request": request,
-#         "predicted_class": predicted_class,
-#         "confidence": f"{confidence * 100:.2f}%",
-#     })
-
-
-
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -169,10 +10,14 @@ import tensorflow as tf
 import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi import Form
+import base64
+
+# --- Get base directory of this script (main.py) ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# print("Base path being used:", BASE_DIR)
 
 app = FastAPI()
-
-
 
 # CORS config (keep if using frontend separately)
 origins = ["http://localhost", "http://localhost:3000"]
@@ -185,12 +30,17 @@ app.add_middleware(
 )
 
 # Load model
-MODEL = tf.keras.models.load_model("../models/2")
+MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "models", "2"))
+# print("Model path being used:", MODEL_PATH)
+
+MODEL = tf.keras.models.load_model(MODEL_PATH)
 CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
-# Setup static files & templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 # Image read helper
@@ -200,18 +50,124 @@ def read_file_as_image(data) -> np.ndarray:
     return np.array(image)
 
 
+
+# Route Handlers ----------------------------------------------------->
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+    # return templates.TemplateResponse("index.html", {"request": request})
     return templates.TemplateResponse("index.html", {"request": request})
-    # return templates.TemplateResponse("indexOriginal.html", {"request": request})
+
+
+@app.post("/predict/camera", response_class=HTMLResponse)
+async def predict_camera(request: Request, camera_image: str = Form(...)):
+    image = None
+    image_url = None
+
+    # Ensure upload directory exists
+    upload_dir = os.path.join(STATIC_DIR, "uploads")
+    os.makedirs(upload_dir, exist_ok=True)
+
+    if camera_image and camera_image.strip() != "":
+        try:
+            header, encoded = camera_image.split(",", 1)
+            decoded = base64.b64decode(encoded)
+            image = read_file_as_image(decoded)
+
+            # Save to static/uploads with a default name
+            image_filename = "webcam_image.jpg"
+            image_path = os.path.join(upload_dir, image_filename)
+
+            with open(image_path, "wb") as f:
+                f.write(decoded)
+
+            image_url = f"/static/uploads/{image_filename}"
+        except Exception as e:
+            print("Camera image error:", e)
+            return templates.TemplateResponse("index.html", {
+                "request": request,
+                "error": "Invalid image data from camera."
+            })
+    else:
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "error": "No image captured from camera."
+        })
+
+    # Run prediction
+    try:
+        img_batch = np.expand_dims(image, 0)
+        predictions = MODEL.predict(img_batch)
+        predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+        confidence = float(np.max(predictions[0]))
+
+        return templates.TemplateResponse("result.html", {
+            "request": request,
+            "predicted_class": predicted_class,
+            "confidence": f"{confidence * 100:.2f}",
+            "image_url": image_url
+        })
+    except Exception as e:
+        print("Prediction error:", e)
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "error": "Prediction failed. Try again."
+        })
 
 
 
 @app.post("/predict", response_class=HTMLResponse)
-async def predict(request: Request, file: UploadFile = File(...)):
-    image = read_file_as_image(await file.read())
-    img_batch = np.expand_dims(image, 0)
+async def predict(
+    request: Request,
+    file: UploadFile = File(None),
+    camera_image: str = Form(None)
+):
+    image = None
+    image_url = None
 
+    # Ensure upload directory exists
+    upload_dir = os.path.join(STATIC_DIR, "uploads")
+    os.makedirs(upload_dir, exist_ok=True)
+
+    # Case 1: File uploaded manually
+    if file is not None:
+        contents = await file.read()
+        image = read_file_as_image(contents)
+
+        # Save the uploaded image to static/uploads
+        image_filename = file.filename
+        image_path = os.path.join(upload_dir, image_filename)
+
+        with open(image_path, "wb") as f:
+            f.write(contents)
+
+        image_url = f"/static/uploads/{image_filename}"  # for browser
+
+    # Case 2: Camera image as base64 string
+
+    
+    elif camera_image and camera_image.strip() != "":
+
+        header, encoded = camera_image.split(",", 1)
+        decoded = base64.b64decode(encoded)
+        image = read_file_as_image(decoded)
+
+        # Save to static/uploads with a default name (e.g., from webcam)
+        image_filename = "webcam_image.jpg"
+        image_path = os.path.join(upload_dir, image_filename)
+
+        with open(image_path, "wb") as f:
+            f.write(decoded)
+
+        image_url = f"/static/uploads/{image_filename}"  # for browser
+
+    else:
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "error": "No image provided"
+        })
+
+    # Run prediction
+    img_batch = np.expand_dims(image, 0)
     predictions = MODEL.predict(img_batch)
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
     confidence = float(np.max(predictions[0]))
@@ -219,11 +175,13 @@ async def predict(request: Request, file: UploadFile = File(...)):
     return templates.TemplateResponse("result.html", {
         "request": request,
         "predicted_class": predicted_class,
-        "confidence": f"{confidence * 100:.2f}%",
+        "confidence": f"{confidence * 100:.2f}",
+        "image_url": image_url
     })
 
-    # return templates.TemplateResponse("resultOriginal.html", {
-    #     "request": request,
-    #     "predicted_class": predicted_class,
-    #     "confidence": f"{confidence * 100:.2f}%",
-    # })
+
+
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request})
+
