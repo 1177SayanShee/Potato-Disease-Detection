@@ -7,13 +7,13 @@
     <div class="toggle-container">
         <input type="radio" name="toggle" id="upload" checked>
         <input type="radio" name="toggle" id="camera">
-      
+
         <div class="toggle-slider"></div>
-      
+
         <label for="upload" onclick="showUpload()">Upload</label>
         <label for="camera" onclick="showCamera()">Camera</label>
-      </div>
-      
+    </div>
+
 
     <!-- Upload Card -->
     <div id="uploadCard" class="glass-card cal-sans-regular">
@@ -40,7 +40,7 @@
         </div>
 
         <!-- Form for Camera Image -->
-        <form id="camera-form" action="/predict/camera" method="post" style="display: none;">
+        <form id="camera-form" action="/predict" method="post" style="display: none;">
             <input type="hidden" name="camera_image" id="camera_image">
         </form>
     </div>
@@ -81,9 +81,12 @@
         preview.src = '#';
         photoCaptured = false;
         document.getElementById('result').innerText = '';
+
+        // Reset the camera form and preview
+        resetCameraForm();
     }
 
-    
+
     function capturePhoto() {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -110,16 +113,19 @@
             document.getElementById('cameraCard').style.display = 'none';
             document.getElementById('uploadCard').style.display = 'block';
 
-            // ✅ If you use a toggle switch for mode selection, set it too
-            const uploadToggle = document.getElementById('uploadToggle');
-            if (uploadToggle) {
-                uploadToggle.checked = true;
-            }
+            // Update the radio button state to reflect upload mode
+            document.getElementById('upload').checked = true;  // Make upload mode active
+            document.getElementById('camera').checked = false; // Deactivate camera mode
 
-            // ✅ If you have a showUpload() function to handle logic, call it
+
+
+            // If you have a showUpload() function to handle logic, call it
             if (typeof showUpload === 'function') {
                 showUpload();
             }
+
+            // Reset the camera form if camera is unavailable
+            resetCameraForm();
 
             return; // Exit early since camera is unavailable
         }
@@ -128,6 +134,9 @@
         preview.style.display = 'none';
         preview.src = '#';
         document.getElementById('result').innerText = '';
+
+        // Reset the camera form if camera is unavailable
+        resetCameraForm();
     }
 
     function previewUploadImage() {
@@ -148,7 +157,7 @@
         }
     }
 
-    
+
     // Submit the form for camera image prediction
     function predictCamera() {
         // Check if the camera image input is not empty
@@ -163,13 +172,14 @@
         predictButton.textContent = "Processing...";
 
         // Submit the form with the base64 camera image
-        // cameraForm.submit();
 
         setTimeout(() => {
-            document.getElementById('camera-form').submit();
+            document.getElementById('camera-form').submit();  // Submit form
+            resetCameraForm();  // Reset camera form after submission
             predictButton.disabled = false;
             predictButton.textContent = "Predict";
         }, 1000);
+
 
     }
 
@@ -205,15 +215,19 @@
     }
 
     function handleToggleChange(toggle) {
-    if (toggle.checked) {
-        showCamera();
-    } else {
-        showUpload();
+        if (toggle.checked) {
+            showCamera();
+        } else {
+            showUpload();
+        }
+
+        function resetCameraForm() {
+            cameraImageInput.value = '';  // Clear base64 data
+            preview.style.display = 'none'; // Hide the image preview
+            document.getElementById('result').innerText = ''; // Clear the result text
+        }
+
     }
-}
 
 </script>
-
-
-
 {% endblock %}

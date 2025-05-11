@@ -4,3 +4,9 @@ then:
 cd potato-disease-classification
 cd api
 uvicorn main:app --reload
+
+
+
+ predicted_class = "Healthy"
+    # predicted_class = "Early Blight"
+    # predicted_class = "Late Blight"

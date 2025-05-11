@@ -350,4 +350,21 @@ h2 {
   }
   
 
+/* Solution Buttons in Resul Page */
+.btn-primary:hover {
+    background-color: #0069d9;
+    transform: scale(1.03);
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    transform: scale(1.03);
+}
+
+.btn-info:hover {
+    background-color: #17a2b8;
+    transform: scale(1.03);
+}
+
+
 

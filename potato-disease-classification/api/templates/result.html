@@ -10,6 +10,63 @@
         <p class="result-info"><strong>Class:</strong> {{ predicted_class }}</p>
         <p class="result-info"><strong>Confidence:</strong> {{ confidence }}%</p>
         <a href="/" class="btn btn-success w-100 mt-3">Try another image</a>
+
+        {% if predicted_class == 'Early Blight' %}
+        <a href="/solution/early-blight" class="btn btn-primary w-100 mt-2">Early Blight Solution</a>
+        {% elif predicted_class == 'Late Blight' %}
+        <a href="/solution/late-blight" class="btn btn-warning w-100 mt-2">Late Blight Solution</a>
+
+        {% elif predicted_class == 'Healthy' %}
+        <form id="recheck-form" action="/predict" method="post">
+            {% if image_url %}
+            <input type="hidden" name="camera_image" id="camera_image_input">
+            {% endif %}
+            <button id="recheck-btn" type="submit" class="btn btn-info w-100 mt-2">
+                Check Again
+            </button>
+        </form>
+
+
+
+
+        <script>
+            // Convert image at `image_url` to base64 and store in hidden input
+            async function fetchAndConvertImage(url) {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            (async () => {
+                const imageUrl = "{{ image_url }}";
+                if (imageUrl) {
+                    const base64Image = await fetchAndConvertImage(imageUrl);
+                    document.getElementById('camera_image_input').value = base64Image;
+                }
+            })();
+
+            // Handle delayed submission
+            const form = document.getElementById("recheck-form");
+            const button = document.getElementById("recheck-btn");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault(); // stop default submission
+
+                // Show loading state
+                button.disabled = true;
+                button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Rechecking...`;
+
+                // Delay and submit manually
+                setTimeout(() => {
+                    form.submit();
+                }, 1500); // 1.5 second delay
+            });
+        </script>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

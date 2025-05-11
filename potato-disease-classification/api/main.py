@@ -31,7 +31,9 @@ app.add_middleware(
 
 # Load model
 MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "models", "2"))
-# print("Model path being used:", MODEL_PATH)
+# MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "saved_models", "1"))
+
+print("Model path being used:", MODEL_PATH)
 
 MODEL = tf.keras.models.load_model(MODEL_PATH)
 CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
@@ -54,65 +56,7 @@ def read_file_as_image(data) -> np.ndarray:
 # Route Handlers ----------------------------------------------------->
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    # return templates.TemplateResponse("index.html", {"request": request})
     return templates.TemplateResponse("index.html", {"request": request})
-
-
-@app.post("/predict/camera", response_class=HTMLResponse)
-async def predict_camera(request: Request, camera_image: str = Form(...)):
-    image = None
-    image_url = None
-
-    # Ensure upload directory exists
-    upload_dir = os.path.join(STATIC_DIR, "uploads")
-    os.makedirs(upload_dir, exist_ok=True)
-
-    if camera_image and camera_image.strip() != "":
-        try:
-            header, encoded = camera_image.split(",", 1)
-            decoded = base64.b64decode(encoded)
-            image = read_file_as_image(decoded)
-
-            # Save to static/uploads with a default name
-            image_filename = "webcam_image.jpg"
-            image_path = os.path.join(upload_dir, image_filename)
-
-            with open(image_path, "wb") as f:
-                f.write(decoded)
-
-            image_url = f"/static/uploads/{image_filename}"
-        except Exception as e:
-            print("Camera image error:", e)
-            return templates.TemplateResponse("index.html", {
-                "request": request,
-                "error": "Invalid image data from camera."
-            })
-    else:
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "error": "No image captured from camera."
-        })
-
-    # Run prediction
-    try:
-        img_batch = np.expand_dims(image, 0)
-        predictions = MODEL.predict(img_batch)
-        predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-        confidence = float(np.max(predictions[0]))
-
-        return templates.TemplateResponse("result.html", {
-            "request": request,
-            "predicted_class": predicted_class,
-            "confidence": f"{confidence * 100:.2f}",
-            "image_url": image_url
-        })
-    except Exception as e:
-        print("Prediction error:", e)
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "error": "Prediction failed. Try again."
-        })
-
 
 
 @app.post("/predict", response_class=HTMLResponse)
@@ -180,8 +124,16 @@ async def predict(
     })
 
 
-
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
+
+@app.get("/solution/early-blight", response_class=HTMLResponse)
+async def early_blight_solution(request: Request):
+    return templates.TemplateResponse("early_blight.html", {"request": request})
+
+
+@app.get("/solution/late-blight", response_class=HTMLResponse)
+async def late_blight_solution(request: Request):
+    return templates.TemplateResponse("late_blight.html", {"request": request})
 
