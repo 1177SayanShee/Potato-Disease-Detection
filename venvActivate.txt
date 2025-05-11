@@ -10,3 +10,19 @@ uvicorn main:app --reload
  predicted_class = "Healthy"
     # predicted_class = "Early Blight"
     # predicted_class = "Late Blight"
+
+
+        <!-- {% if predicted_class == 'Early Blight' %}
+        <a href="/solution/early-blight" class="btn btn-primary w-100 mt-2">Early Blight Solution</a>
+        {% elif predicted_class == 'Late Blight' %}
+        <a href="/solution/late-blight" class="btn btn-warning w-100 mt-2">Late Blight Solution</a> -->
+
+        <!-- {% elif predicted_class == 'Healthy' %}
+        <form id="recheck-form" action="/predict" method="post">
+            {% if image_url %}
+            <input type="hidden" name="camera_image" id="camera_image_input">
+            {% endif %}
+            <button id="recheck-btn" type="submit" class="btn btn-info w-100 mt-2">
+                Check Again
+            </button>
+        </form> -->

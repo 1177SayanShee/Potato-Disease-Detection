@@ -30,7 +30,7 @@ app.add_middleware(
 )
 
 # Load model
-MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "models", "2"))
+MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "models", "3"))
 # MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "saved_models", "1"))
 
 print("Model path being used:", MODEL_PATH)
