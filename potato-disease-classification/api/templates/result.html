@@ -3,84 +3,92 @@
 {% block title %}Prediction Result{% endblock %}
 
 {% block content %}
-<div class="rotating-border-wrapper">
-    <div class="glass-card cal-sans-regular text-center">
-        <h2>Prediction Result</h2>
-        <img src="{{ image_url }}" alt="Uploaded Image" class="img-fluid rounded mb-3" style="max-height: 300px;">
-        <p class="result-info"><strong>Class:</strong> {{ predicted_class }}</p>
-        <p class="result-info"><strong>Confidence:</strong> {{ confidence }}%</p>
-        <a href="/" class="btn btn-success w-100 mt-3">Try another image</a>
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="glass-card cal-sans-regular text-center">
+
+                <h2>Prediction Result</h2>
+                <img src="{{ image_url }}" alt="Uploaded Image" class="img-fluid rounded mb-3"
+                style="max-height: 300px; max-width: 100%;">
+                <p class="result-info"><strong>Class:</strong> {{ predicted_class }}</p>
+                <p class="result-info"><strong>Confidence:</strong> {{ confidence }}%</p>
+                <a href="/" class="btn btn-success w-100 mt-3">Try another image</a>
 
 
-        {% if predicted_class == 'Early Blight' %}
-        <a href="/solution/early-blight" class="btn btn-primary w-100 mt-2">Early Blight Solution</a>
-        {% elif predicted_class == 'Late Blight' %}
-        <a href="/solution/late-blight" class="btn btn-warning w-100 mt-2">Late Blight Solution</a>
-        {% elif predicted_class == 'Healthy' %}
-        <p class="text-success mt-2">Your plant is healthy! 🌱</p>
-        {% endif %}
+                {% if predicted_class == 'Early Blight' %}
+                <a href="/solution/early-blight" class="btn btn-primary w-100 mt-2">Early Blight Solution</a>
+                {% elif predicted_class == 'Late Blight' %}
+                <a href="/solution/late-blight" class="btn btn-warning w-100 mt-2">Late Blight Solution</a>
+                {% elif predicted_class == 'Healthy' %}
+                <p class="text-success mt-2">Your plant is healthy! 🌱</p>
+                {% endif %}
 
 
-        <!-- Recheck form: now shown for ALL classes -->
-        <form id="recheck-form" action="/predict" method="post">
-            {% if image_url %}
-            <input type="hidden" name="camera_image" id="camera_image_input">
-            {% endif %}
-            <button id="recheck-btn" type="submit" class="btn btn-info w-100 mt-2">
-                Check Again
-            </button>
-        </form>
+                <!-- Recheck form: now shown for ALL classes -->
+                <form id="recheck-form" action="/predict" method="post">
+                    {% if image_url %}
+                    <input type="hidden" name="camera_image" id="camera_image_input">
+                    {% endif %}
+                    <button id="recheck-btn" type="submit" class="btn btn-info w-100 mt-2">
+                        Check Again
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
+<script>
 
-        <script>
+    // Handle delayed submission
+    const form = document.getElementById("recheck-form");
+    const button = document.getElementById("recheck-btn");
 
-            // Handle delayed submission
-            const form = document.getElementById("recheck-form");
-            const button = document.getElementById("recheck-btn");
+    // Convert image at `image_url` to base64 and store in hidden input
+    async function fetchAndConvertImage(url) {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
 
-            // Convert image at `image_url` to base64 and store in hidden input
-            async function fetchAndConvertImage(url) {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.readAsDataURL(blob);
-                });
-            }
+    (async () => {
+        const imageUrl = "{{ image_url }}";
+        if (imageUrl) {
+            const base64Image = await fetchAndConvertImage(imageUrl);
+            document.getElementById('camera_image_input').value = base64Image;
+        }
+    })();
 
-            (async () => {
-                const imageUrl = "{{ image_url }}";
-                if (imageUrl) {
-                    const base64Image = await fetchAndConvertImage(imageUrl);
-                    document.getElementById('camera_image_input').value = base64Image;
-                }
-            })();
-
-            form.addEventListener("submit", function (e) {
-                e.preventDefault(); // stop default submission
-                button.disabled = true;
-                button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Rechecking...`;
-                setTimeout(() => {
-                    form.submit();
-                }, 500); // 1.5 second delay
-            });
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // stop default submission
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Rechecking...`;
+        setTimeout(() => {
+            form.submit();
+        }, 500); // 1.5 second delay
+    });
 
 
-            form.addEventListener("submit", function (e) {
-                e.preventDefault(); // stop default submission
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // stop default submission
 
-                // Show loading state
-                button.disabled = true;
-                button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Rechecking...`;
+        // Show loading state
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Rechecking...`;
 
-                // Delay and submit manually
-                setTimeout(() => {
-                    form.submit();
-                }, 1500); // 1.5 second delay
-            });
-        </script>
+        // Delay and submit manually
+        setTimeout(() => {
+            form.submit();
+        }, 1500); // 1.5 second delay
+    });
+</script>
 
-        {% endblock %}
+{% endblock %}

@@ -2,11 +2,13 @@
 
 {% block content %}
 
-    <div class="container mt-5 pt-5 content-wrapper d-flex flex-column align-items-center">
+<div class="container mt-5 pt-5 content-wrapper d-flex flex-column align-items-center">
 
 
     <!-- Toggle Switch -->
-    <div class="toggle-container">
+    <!-- <div class="toggle-container"> -->
+    <div class="toggle-container d-flex justify-content-center flex-wrap gap-3">
+
         <input type="radio" name="toggle" id="upload" checked>
         <input type="radio" name="toggle" id="camera">
 
@@ -35,7 +37,8 @@
         <h2>CAPTURE IMAGE</h2>
         <video id="cameraFeed" autoplay class="preview-img"></video>
         <canvas id="snapshot" style="display: none;"></canvas>
-        <div class="mt-3 d-flex justify-content-between">
+        <!-- <div class="mt-3 d-flex justify-content-between"> -->
+            <div class="mt-3 d-flex justify-content-between flex-wrap gap-2">
             <button class="btn btn-outline-warning" onclick="capturePhoto()">Capture</button>
             <button class="btn btn-success" onclick="predictCamera()">Predict</button>
 
@@ -216,19 +219,18 @@
         }
     }
 
+    function resetCameraForm() {
+            cameraImageInput.value = '';  // Clear base64 data
+            preview.style.display = 'none'; // Hide the image preview
+            document.getElementById('result').innerText = ''; // Clear the result text
+        }
+
     function handleToggleChange(toggle) {
         if (toggle.checked) {
             showCamera();
         } else {
             showUpload();
         }
-
-        function resetCameraForm() {
-            cameraImageInput.value = '';  // Clear base64 data
-            preview.style.display = 'none'; // Hide the image preview
-            document.getElementById('result').innerText = ''; // Clear the result text
-        }
-
     }
 
 </script>
