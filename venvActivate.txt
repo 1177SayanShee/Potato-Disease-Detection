@@ -4,3 +4,8 @@ then:
 cd potato-disease-classification
 cd api
 uvicorn main:app --reload
+
+
+// Run the Script When want to delete images in the Clodinary Service folder
+
+python delete_all_images.py

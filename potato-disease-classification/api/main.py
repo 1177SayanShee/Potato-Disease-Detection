@@ -15,12 +15,10 @@ import base64
 import cloudinary
 import cloudinary.uploader
 from dotenv import load_dotenv
+from fastapi import BackgroundTasks
+import time
+
 load_dotenv()  # This will load .env from current directory
-
-
-
-
-
 
 # Configure using your Cloudinary credentials
 cloudinary.config(
@@ -68,6 +66,12 @@ def read_file_as_image(data) -> np.ndarray:
     image = image.resize((256, 256))  # match your model's input shape
     return np.array(image)
 
+# background task to delete the image
+def delete_image_after_delay(public_id: str, delay: int = 300):
+    time.sleep(delay)  # wait for 5 minutes
+    cloudinary.uploader.destroy(public_id, invalidate=True)
+    # print(f"Deleted image with public_id '{public_id}'. Cloudinary response: {result}")
+
 
 # Route Handlers ----------------------------------------------------->
 @app.get("/", response_class=HTMLResponse)
@@ -78,11 +82,13 @@ async def index(request: Request):
 @app.post("/predict", response_class=HTMLResponse)
 async def predict(
     request: Request,
+    background_tasks: BackgroundTasks,  # 👈 Add this
     file: UploadFile = File(None),
     camera_image: str = Form(None)
 ):
     image = None
     image_url = None
+    public_id = None  # 👈 Add this to store Cloudinary public_id
 
     # Case 1: File uploaded manually
     if file is not None:
@@ -91,15 +97,17 @@ async def predict(
 
         # Upload to Cloudinary
         upload_result = cloudinary.uploader.upload(
-        contents,
-        folder="potato_disease_uploads/",
-        transformation=[
-        {"width": 256, "height": 256, "crop": "limit"},
-        {"fetch_format": "auto", "quality": "auto"}
-    ]
-)
+           contents,
+           folder="potato_disease_uploads/",
+           transformation=[
+           {"width": 256, "height": 256, "crop": "limit"},
+           {"fetch_format": "auto", "quality": "auto"}
+            ],
+           invalidate=True  # 👈 Important for deletion
+        )
 
         image_url = upload_result.get("secure_url")
+        public_id = upload_result.get("public_id")  # 👈 Capture public_id
 
 
     # Case 2: Camera image as base64 string
@@ -112,22 +120,29 @@ async def predict(
         image = read_file_as_image(decoded)
 
         upload_result = cloudinary.uploader.upload(
-        decoded,
-        folder="potato_disease_uploads/",
-        transformation=[
-        {"width": 256, "height": 256, "crop": "limit"},
-        {"fetch_format": "auto", "quality": "auto"}
-    ]
-)
+           decoded,
+           folder="potato_disease_uploads/",
+           transformation=[
+           {"width": 256, "height": 256, "crop": "limit"},
+           {"fetch_format": "auto", "quality": "auto"}
+            ],
+           invalidate=True
+        )
+
 
         image_url = upload_result.get("secure_url")
+        public_id = upload_result.get("public_id")
 
     else:
         return templates.TemplateResponse("index.html", {
             "request": request,
             "error": "No image provided"
         })
-
+    
+    # Schedule deletion task
+    if public_id:
+        background_tasks.add_task(delete_image_after_delay, public_id, delay=300) # 300 seconds
+        
     # Run prediction
     img_batch = np.expand_dims(image, 0)
     predictions = MODEL.predict(img_batch)
