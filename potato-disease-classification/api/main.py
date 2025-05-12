@@ -69,7 +69,6 @@ def read_file_as_image(data) -> np.ndarray:
     return np.array(image)
 
 
-
 # Route Handlers ----------------------------------------------------->
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -91,7 +90,15 @@ async def predict(
         image = read_file_as_image(contents)
 
         # Upload to Cloudinary
-        upload_result = cloudinary.uploader.upload(contents, folder="potato_disease_uploads/")
+        upload_result = cloudinary.uploader.upload(
+        contents,
+        folder="potato_disease_uploads/",
+        transformation=[
+        {"width": 256, "height": 256, "crop": "limit"},
+        {"fetch_format": "auto", "quality": "auto"}
+    ]
+)
+
         image_url = upload_result.get("secure_url")
 
 
@@ -106,8 +113,13 @@ async def predict(
 
         upload_result = cloudinary.uploader.upload(
         decoded,
-        folder="potato_disease_uploads/"
-        )
+        folder="potato_disease_uploads/",
+        transformation=[
+        {"width": 256, "height": 256, "crop": "limit"},
+        {"fetch_format": "auto", "quality": "auto"}
+    ]
+)
+
         image_url = upload_result.get("secure_url")
 
     else:
