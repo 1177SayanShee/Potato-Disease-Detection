@@ -1,17 +1,36 @@
-<nav class="navbar navbar-expand-lg navbar-dark  custom-navbar fixed-top">
+<nav class="navbar navbar-expand-lg custom-navbar navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="logo" href="/">
-      <img src="/static/ProjectIcons/plantdiseaseicon.jpg" alt="iconImage.png">
-    </a>
 
-    <a class="navbar-brand cal-sans-regular" href="/">Plant Disease Detector</a>
-    <a href="/about" class="btn btn-success me-2">about</a>
-    <!-- <a href="/about" class="btn navbar-brand cal-sans-regular me-2">About</a> -->
+    <div class="d-flex align-items-center flex-shrink-1 me-3">
+      <a class="logo text-decoration-none" href="/">
+        <img src="/static/ProjectIcons/plantdiseaseicon.jpg" alt="iconImage.png" class="logo-img">
+      </a>
+      <a class="navbar-brand cal-sans-regular brand-text ms-2 mb-0" href="/">Plant Disease Detector</a>
+      <!-- <a class="btn btn-success me-2" href="/about">About</a> -->
+
+    </div>
 
 
-    <div class="d-flex ms-auto">
-      <a href="/login" class="btn btn-outline-light me-2">Login</a>
-      <a href="/register" class="btn btn-success">Register</a>
+
+    <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto text-center">
+        <li class="nav-item">
+          <a class="nav-link btn btn-success text-white my-1 mx-1" href="/about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-light my-1 mx-1" href="/">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-success text-white my-1 mx-1" href="/">Register</a>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>

@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -17,7 +18,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 100px; 
+    padding-top: 100px;
 }
 
 
@@ -112,8 +113,8 @@ h2 {
     font-weight: 700;
     font-style: normal;
     font-size: xx-large;
-    color:#38165c;
-    
+    color: #38165c;
+
 }
 
 
@@ -138,6 +139,7 @@ h2 {
         opacity: 0;
         transform: translateY(40px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -160,7 +162,8 @@ h2 {
 }
 
 .navbar-brand:hover {
-    color: #38165c !important;  /* prevent it from changing on hover */
+    color: #38165c !important;
+    /* prevent it from changing on hover */
     transform: scale(1.02);
 }
 
@@ -171,27 +174,81 @@ h2 {
 }
 
 
-/* Transparent and glassmorphism navbar */
+
+
 .custom-navbar {
-    background: rgba(66, 134, 6, 0.6); /* green with 60% opacity */
+    background: linear-gradient(90deg, #7fc381, #81c784);
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
+}
 
-.logo img{
-    height: 40px; 
+
+.logo img {
+    height: 40px;
     vertical-align: middle;
     margin-right: 20px;
     margin-left: 15px;
     border-radius: 16px;
     transition: transform 0.2s ease, color 0.2s ease;
+
 }
-.logo:hover{
-    transform: scale(1.05);
+
+.logo:hover {
+    transform: scale(1.03);
+}
+
+
+.brand-text {
+    font-size: 2rem;
+    transition: font-size 0.3s ease;
+}
+
+.nav-link {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+  }
+
+/* Make adjustments below medium screen (bootstrap breakpoint is 768px) */
+@media (max-width: 741px) {
+
+    .logo img {
+        height: 30px;
+    }
+
+    .brand-text {
+        font-size: 1.3rem;
+    }
+
+    .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .navbar {
+        padding: 0.3rem 1rem;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+      }
 }
   
+
+/* Toggle Hamburger Button Effect */
+
+.custom-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transform: scale(1.03);
+    cursor: pointer;
+}
+
+
 
 
 /* Footer styling */
@@ -199,7 +256,7 @@ h2 {
     text-align: center;
     display: flex;
     height: auto;
-    padding : 1rem;
+    padding: 1rem;
     background-color: rgba(104, 138, 91, 0.6);
     flex-wrap: wrap;
     justify-content: center;
@@ -228,7 +285,7 @@ h2 {
 
 .f-info-links a {
     text-decoration: none;
-    
+
 }
 
 .f-info-links a:hover {
@@ -238,26 +295,27 @@ h2 {
 
 /* About Section */
 .about-section {
-    background-color: rgba(255, 255, 255, 0.1); 
-    
+    background-color: rgba(255, 255, 255, 0.1);
+
     /* color: #007bff; */
-    
+
     padding: 20px;
-    
+
     margin-top: 15px;
     backdrop-filter: blur(6px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.about-section h2{
+.about-section h2 {
     font-weight: 600;
     font-style: normal;
     font-size: x-large;
-    color:#38165c;
+    color: #38165c;
 
 }
 
 
+/* Index page Related */
 #cameraFeed {
     max-width: 400px;
     max-height: 400px;
@@ -280,43 +338,29 @@ h2 {
     }
 }
 
-
-
-
-
-@media (max-width: 576px) {
-    .glass-card {
-        padding: 1.5rem;
-    }
-
-    .preview-img {
-        max-width: 100%;
-        height: auto;
-    }
-}
-
-
 .toggle-container {
     position: relative;
     width: 220px;
     height: 50px;
-    background: #28a745;;
+    background: #28a745;
+    ;
     border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
     font-family: sans-serif;
-    margin: 0 auto 30px auto; /* 👈 This adds 20px space at the bottom */
-  }
-  
-  .toggle-container input[type="radio"] {
+    margin: 0 auto 30px auto;
+    /*  This adds 20px space at the bottom */
+}
+
+.toggle-container input[type="radio"] {
     display: none;
-  }
-  
-  .toggle-container label {
+}
+
+.toggle-container label {
     flex: 1;
     text-align: center;
     z-index: 2;
@@ -326,29 +370,30 @@ h2 {
     transition: color 0.3s ease;
     user-select: none;
     line-height: 40px;
-  }
-  
-  .toggle-slider {
+}
+
+.toggle-slider {
     position: absolute;
     top: 5px;
     left: 5px;
-    width: 100px; /* half of total width minus padding */
+    width: 100px;
     height: 40px;
     background: white;
     border-radius: 40px;
     transition: transform 0.4s ease;
     z-index: 1;
-  }
-  
-  #camera:checked ~ .toggle-slider {
-    transform: translateX(110px); /* slide to camera */
-  }
-  
-  #upload:checked ~ label[for="upload"],
-  #camera:checked ~ label[for="camera"] {
-        color : rgba(66, 134, 6, 1);
-  }
-  
+}
+
+#camera:checked~.toggle-slider {
+    transform: translateX(110px);
+    /* slide to camera */
+}
+
+#upload:checked~label[for="upload"],
+#camera:checked~label[for="camera"] {
+    color: rgba(66, 134, 6, 1);
+}
+
 
 /* Solution Buttons in Resul Page */
 .btn-primary:hover {
@@ -365,6 +410,3 @@ h2 {
     background-color: #17a2b8;
     transform: scale(1.03);
 }
-
-
-
