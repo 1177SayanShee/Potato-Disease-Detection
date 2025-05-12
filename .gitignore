@@ -2,3 +2,4 @@ venv
 extras/
 ToRunGlobally.txt
 venvActivate.txt
+.env

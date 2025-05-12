@@ -12,6 +12,23 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi import Form
 import base64
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
+load_dotenv()  # This will load .env from current directory
+
+
+
+
+
+
+# Configure using your Cloudinary credentials
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 # --- Get base directory of this script (main.py) ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -68,23 +85,15 @@ async def predict(
     image = None
     image_url = None
 
-    # Ensure upload directory exists
-    upload_dir = os.path.join(STATIC_DIR, "uploads")
-    os.makedirs(upload_dir, exist_ok=True)
-
     # Case 1: File uploaded manually
     if file is not None:
         contents = await file.read()
         image = read_file_as_image(contents)
 
-        # Save the uploaded image to static/uploads
-        image_filename = file.filename
-        image_path = os.path.join(upload_dir, image_filename)
+        # Upload to Cloudinary
+        upload_result = cloudinary.uploader.upload(contents, folder="potato_disease_uploads/")
+        image_url = upload_result.get("secure_url")
 
-        with open(image_path, "wb") as f:
-            f.write(contents)
-
-        image_url = f"/static/uploads/{image_filename}"  # for browser
 
     # Case 2: Camera image as base64 string
 
@@ -95,14 +104,11 @@ async def predict(
         decoded = base64.b64decode(encoded)
         image = read_file_as_image(decoded)
 
-        # Save to static/uploads with a default name (e.g., from webcam)
-        image_filename = "webcam_image.jpg"
-        image_path = os.path.join(upload_dir, image_filename)
-
-        with open(image_path, "wb") as f:
-            f.write(decoded)
-
-        image_url = f"/static/uploads/{image_filename}"  # for browser
+        upload_result = cloudinary.uploader.upload(
+        decoded,
+        folder="potato_disease_uploads/"
+        )
+        image_url = upload_result.get("secure_url")
 
     else:
         return templates.TemplateResponse("index.html", {
