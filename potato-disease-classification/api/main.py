@@ -17,8 +17,7 @@ import cloudinary.uploader
 from dotenv import load_dotenv
 from fastapi import BackgroundTasks
 import time
-
-load_dotenv()  # This will load .env from current directory
+load_dotenv()  
 
 # Configure using your Cloudinary credentials
 cloudinary.config(
@@ -30,7 +29,7 @@ cloudinary.config(
 
 # --- Get base directory of this script (main.py) ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# print("Base path being used:", BASE_DIR)
+
 
 app = FastAPI()
 
@@ -46,9 +45,8 @@ app.add_middleware(
 
 # Load model
 MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "models", "3"))
-# MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "saved_models", "1"))
 
-print("Model path being used:", MODEL_PATH)
+
 
 MODEL = tf.keras.models.load_model(MODEL_PATH)
 CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
@@ -63,14 +61,13 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 # Image read helper
 def read_file_as_image(data) -> np.ndarray:
     image = Image.open(BytesIO(data)).convert("RGB")
-    image = image.resize((256, 256))  # match your model's input shape
+    image = image.resize((256, 256))  # match our model's input shape
     return np.array(image)
 
 # background task to delete the image
 def delete_image_after_delay(public_id: str, delay: int = 300):
     time.sleep(delay)  # wait for 5 minutes
     cloudinary.uploader.destroy(public_id, invalidate=True)
-    # print(f"Deleted image with public_id '{public_id}'. Cloudinary response: {result}")
 
 
 # Route Handlers ----------------------------------------------------->
@@ -82,15 +79,15 @@ async def index(request: Request):
 @app.post("/predict", response_class=HTMLResponse)
 async def predict(
     request: Request,
-    background_tasks: BackgroundTasks,  # 👈 Add this
+    background_tasks: BackgroundTasks,  
     file: UploadFile = File(None),
     camera_image: str = Form(None)
 ):
     image = None
     image_url = None
-    public_id = None  # 👈 Add this to store Cloudinary public_id
+    public_id = None  
 
-    # Case 1: File uploaded manually
+    # File uploaded manually
     if file is not None:
         contents = await file.read()
         image = read_file_as_image(contents)
@@ -103,16 +100,14 @@ async def predict(
            {"width": 256, "height": 256, "crop": "limit"},
            {"fetch_format": "auto", "quality": "auto"}
             ],
-           invalidate=True  # 👈 Important for deletion
+           invalidate=True  # Important for deletion
         )
 
         image_url = upload_result.get("secure_url")
-        public_id = upload_result.get("public_id")  # 👈 Capture public_id
+        public_id = upload_result.get("public_id")  # Capture public_id
 
 
-    # Case 2: Camera image as base64 string
-
-    
+    # Camera image as base64 string
     elif camera_image and camera_image.strip() != "":
 
         header, encoded = camera_image.split(",", 1)
@@ -139,7 +134,7 @@ async def predict(
             "error": "No image provided"
         })
     
-    # Schedule deletion task
+    # Schedule the deletion task
     if public_id:
         background_tasks.add_task(delete_image_after_delay, public_id, delay=300) # 300 seconds
         

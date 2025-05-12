@@ -192,6 +192,12 @@ h2 {
     transition: all 0.5s ease;
 }
 
+.btn-success:hover {
+    transform: scale(1.030);
+    background-color: #218838;
+}
+
+
 /* Make adjustments below medium screen (bootstrap breakpoint is 768px) */
 @media (max-width: 741px) {
 
@@ -225,7 +231,10 @@ h2 {
 }
 
 .custom-navbar {
-    background: linear-gradient(90deg, #7fc381, #81c784);
+    /* background: linear-gradient(90deg, #7fc381, #81c784); */
+    /* background: linear-gradient(90deg, #4addeb, #6ac66f); */
+    background: linear-gradient(90deg, rgba(73, 213, 226, 0.7), rgba(87, 203, 92, 0.8));
+
     padding: 0.5rem 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
@@ -384,6 +393,24 @@ h2 {
         height: auto;
     }
 }
+
+.custom-upload-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #00bfff;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.custom-upload-btn:hover {
+    background-color: #009acd;
+    transform: scale(1.03);
+}
+
 
 
 /* Responsive adjustments for glass-card and preview */
