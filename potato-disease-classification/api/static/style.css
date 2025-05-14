@@ -173,7 +173,7 @@ h2 {
 
 }
 
-.logo img {
+.logo-img {
     height: 40px;
     vertical-align: middle;
     margin-right: 20px;
@@ -198,15 +198,18 @@ h2 {
 }
 
 
-/* Make adjustments below medium screen (bootstrap breakpoint is 768px) */
+/* For Large screens up to 741px */
 @media (max-width: 741px) {
 
-    .logo img {
+    .logo-img {
         height: 30px;
+        margin-right: 17px;
+        margin-left: 13px;
     }
 
     .navbar-brand {
         font-size: 1.3rem;
+
     }
 
     .navbar-toggler {
@@ -225,6 +228,128 @@ h2 {
 }
 
 
+/* For Medium screens up to 440px */
+@media (max-width: 440px) {
+
+    .logo-img {
+        height: 20px; 
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .navbar-toggler {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .navbar {
+        padding: 0.2rem 0.8rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .navbar-collapse {
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+/* For small screens up to 400px */
+@media (max-width: 400px) {
+
+    .logo-img {
+        height: 17px; 
+        margin-right: 6px;
+        margin-left: 3px;
+    }
+
+    .navbar-brand {
+        font-size: 0.7rem;
+        margin-right: 6px;
+
+    }
+
+    .navbar-toggler {
+        font-size: 0.7rem;
+        padding: 0.1rem 0.3rem;
+    }
+
+    .navbar {
+        padding: 0.2rem 0.8rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .navbar-collapse {
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+/* For very small screens up to 380px */
+@media (max-width: 380px) {
+
+    .logo-img {
+        height: 17px; 
+        margin-right: 6px;
+        margin-left: 3px;
+    }
+
+    .navbar-brand {
+        font-size: 0.9rem !important;
+        margin-right: 4px;
+
+    }
+
+    .navbar-toggler {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.3rem;
+    }
+
+    .navbar {
+        padding: 0.1rem 0.7rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .navbar-collapse {
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+  
 /* Optional tweaks for consistency */
 .navbar .btn {
     font-weight: 600;
@@ -243,7 +368,6 @@ h2 {
 }
 
 /* Toggle Hamburger Button Effect */
-
 .custom-toggler:hover {
     background-color: rgba(255, 255, 255, 0.15);
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
@@ -251,7 +375,10 @@ h2 {
     cursor: pointer;
 }
 
-
+.navbar-shrink {
+    padding: 0.25rem 1rem;
+    background-color: rgba(73, 213, 226, 0.9); 
+  }
 
 
 /* Footer styling */
@@ -502,3 +629,8 @@ h2 {
     background-color: #17a2b8;
     transform: scale(1.03);
 }
+
+/* html {
+    scroll-padding-top: 80px;
+  } */
+  
